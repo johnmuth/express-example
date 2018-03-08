@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+
+  web:
+    build: .
+    environment:
+      DB_HOST: user-db
+      DB_PASSWORD: userdb123
+      DB_USER: userdbuser
+      DB_NAME: userdb
+      NODE_ENV: dev
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    links:
+      - user-db
+    volumes:
+      - './bin:/usr/src/app/bin'
+      - './config:/usr/src/app/config'
+      - './models:/usr/src/app/models'
+      - './public:/usr/src/app/public'
+      - './routes:/usr/src/app/routes'
+      - './test:/usr/src/app/test'
+      - './views:/usr/src/app/views'
+      - './app.js:/usr/src/app/app.js'
+      - './app.json:/usr/src/app/app.json'
+      - '/usr/src/app/node_modules'
+    command: ["npm", "run", "start"]
+
+  user-db:
+    image: mysql/mysql-server:5.7
+    volumes:
+      - "./.data/user-db:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql123
+      MYSQL_DATABASE: userdb
+      MYSQL_USER: userdbuser
+      MYSQL_PASSWORD: userdb123
+    ports:
+      - "3306:3306"
+
+  start_dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - user-db
+    command: user-db:3306

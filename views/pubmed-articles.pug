@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  h1= title
+
+  div(class="col-md-4")
+    h2 Add PubMed article
+
+    form(action="/pubmed-articles/create", method="post", class="well")
+      div(class="form-group")
+        label(for="pmid")
+          | PMID
+        input(type="text", name="pmid", class="form-control")
+      input(type="submit" class="btn btn-default")
+
+  div(class="col-md-6")
+    h2 PubMed Articles
+
+    ul
+    each pubmedArticle in pubmedArticles
+      li
+        strong
+          = pubmedArticle.pmid
+        | &nbsp;
+        a(href="/pubmed-articles/" + pubmedArticle.id + "/destroy", class="btn btn-xs btn-warning") delete
